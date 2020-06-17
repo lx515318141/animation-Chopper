@@ -1,63 +1,51 @@
 {
-    let view = {
-        el: "html",
-        init(){
-            this.$el = $(this.el)
-        },
-        duration: 50,
-        n: 0,
-        writeCode(prefix, code, fn){
-            // let $code = $('#code')
-            // let $styleTag = $('#styleTag')
-            let codeDom = document.querySelector('#code')
-            let styleTagDom = document.querySelector('#styleTag')
-            
-            let id;
-            console.log(code)
-            let _code = code
-            let _this = this
-            id = setTimeout(function run () {
-                _this.n += 1
-                // let container = _code.substring(0,n)
-                // let container = Prism.highlight(container, Prism.languages.css)
-                // $code.html(Prism.highlight(container, Prism.languages.css)) 
-                // $styleTag.html(container)
-                // console.log(_this.duration)
-                codeDom.innerHTML = Prism.highlight(prefix + _code.substring(0, _this.n), Prism.languages.css)
-                styleTagDom.innerHTML = prefix + _code.substring(0, _this.n)
-                // $code.scrollTop($code.height())
-                codeDom.scrollTop = codeDom.scrollHeight
-                if(_this.n < _code.length){
-                    id = setTimeout(run, _this.duration)
-                }else{
-                    // 判断fn是否存在，存在则执行fn
-                    fn && fn()
-                }
-
-            }, _this.duration)
-            
-        },
-        stop(){
-
-        },
-        replay(data){
-            this.duration = 50;
-            this.n = 0
-            setTimeout(() => {
-                let $rButton = $('.action > button:nth-child(2)')
-                this.activeItem($rButton)
-            }, 100);
-            document.querySelector('#code').innerHTML = ''
-            document.querySelector('#styleTag').innerHTML = ''
-            console.log(data)
-            this.writeCode('', data, ()=>{})
-        },
-        activeItem(button){
-            button.addClass('active').siblings('.active').removeClass('active')
+  let view = {
+    el: "html",
+    init() {
+      this.$el = $(this.el);
+    },
+    duration: 50,
+    n: 0,
+    writeCode(prefix, code, fn) {
+      let codeDom = document.querySelector("#code");
+      let styleTagDom = document.querySelector("#styleTag");
+      let id;
+      let _code = code;
+      let _this = this;
+      id = setTimeout(function run() {
+        _this.n += 1;
+        codeDom.innerHTML = Prism.highlight(
+          prefix + _code.substring(0, _this.n),
+          Prism.languages.css
+        );
+        styleTagDom.innerHTML = prefix + _code.substring(0, _this.n);
+        codeDom.scrollTop = codeDom.scrollHeight;
+        if (_this.n < _code.length) {
+          id = setTimeout(run, _this.duration);
+          console.log(_this.duration)
+        } else {
+          // 判断fn是否存在，存在则执行fn
+          fn && fn();
         }
-    };
-    let model = {
-        data: `
+      }, _this.duration);
+    },
+    replay(data) {
+      this.duration = 50;
+      this.n = 0;
+      setTimeout(() => {
+        let $rButton = $(".action > button:nth-child(2)");
+        this.activeItem($rButton);
+      }, 100);
+      document.querySelector("#code").innerHTML = "";
+      document.querySelector("#styleTag").innerHTML = "";
+      this.writeCode("", data, () => {});
+    },
+    activeItem(button) {
+      button.addClass("active").siblings(".active").removeClass("active");
+    },
+  };
+  let model = {
+    data: `
         /* 
          * 今天我们来画一个一碰就哭哭的乔巴
          * 首先给乔巴进行定位 
@@ -774,38 +762,41 @@
         .prompt .complete{
             display: block;
         }
-        `
-    };
-    let controller = {
-        init(view, model){
-            this.view = view;
-            this.view.init()
-            this.model = model;
-            this.bindEvents()
-            this.view.writeCode('', this.model.data, () => {})
-        },
-        bindEvents(){
-            this.view.$el.find('.action').on('click', 'button', (e) => {
-                let $button = $(e.currentTarget)
-                let speed = $button.attr('data-speed')
-                this.view.activeItem($button)
-                switch(speed){
-                    case 'slow':
-                        this.view.duration = 200;
-                        break;
-                    case 'normal':
-                        this.view.duration = 50;
-                        break;
-                    case 'fast':
-                        this.view.duration = 10;
-                        break;
-                    case 'replay':
-                        this.view.stop();
-                        this.view.replay(this.model.data);
-                        break;
-                }
-            })
+        `,
+  };
+  let controller = {
+    init(view, model) {
+      this.view = view;
+      this.view.init();
+      this.model = model;
+      this.bindEvents();
+      this.view.writeCode("", this.model.data, () => {});
+    },
+    bindEvents() {
+      this.view.$el.find(".action").on("click", "button", (e) => {
+        let $button = $(e.currentTarget);
+        let speed = $button.attr("data-speed");
+        this.view.activeItem($button);
+        switch (speed) {
+          case "slow":
+            this.view.duration = 200;
+            break;
+          case "normal":
+            this.view.duration = 50;
+            break;
+          case "fast":
+            this.view.duration = 5;
+            break;
+          case "replay":
+            this.view.replay(this.model.data);
+            break;
         }
-    };
-    controller.init(view, model)
+      });
+      this.view.$el.find('.product').on('click', (e) => {
+        console.log('1')
+        window.location.href = 'https://lx515318141.github.io/CSS-Atlas/chopper/index.html'
+    })
+    },
+  };
+  controller.init(view, model);
 }
